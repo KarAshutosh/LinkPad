@@ -2,13 +2,48 @@ let myFolders = []
 let currentFolder
 
 // on first run do this:
-// 1) uncomment lines 10 and 11
+// 1) uncomment lines 10,11,12,13
 // 2) run the program
 // 3) refresh the page 
 // 4) comment the program
 
-localStorage.setItem("currentFolder","myLinks")
-localStorage.setItem("myFolders", JSON.stringify(["myLinks"]))
+let setupComplete = false
+const setupMsg = document.getElementById("setup-notification")
+
+console.log("SetUpVal1: " + setupComplete)
+
+let currentFolderIndexStr = localStorage.getItem("currentFolderIndex")
+
+if(currentFolderIndexStr)
+{
+    setupMsg.innerHTML = '<h1>LinkPad</h1>'
+}
+else
+{
+    setupMsg.innerHTML = '<button id = "setup-btn" onclick = "setupLocalStorage()">SETUP</button>'
+    setupBtn = document.getElementById("setup-btn")    
+}
+
+function setupLocalStorage()
+{
+    if(currentFolderIndexStr)
+    {
+        setupMsg.textContent = "You have already completed setup"        
+    }
+
+    else
+    {
+        localStorage.setItem("currentFolder","myLinks")
+        localStorage.setItem("myFolders", JSON.stringify(["myLinks"]))
+        localStorage.setItem("currentFolderIndex", "0" )
+        localStorage.setItem("myLinks", JSON.stringify([]) )
+        setupMsg.textContent = "Successfully completed setup"
+        setupBtn.textContent = "LinkPad"
+        setupComplete = true
+        window.location.href = 'index.html'
+    }
+}
+
 
 let myLinks = []
 
@@ -19,7 +54,6 @@ const deleteBtn = document.getElementById("delete-btn")
 const tabBtn = document.getElementById("tab-btn")
 const headingEl = document.getElementById("folder-name")
 
-let currentFolderIndexStr = localStorage.getItem("currentFolderIndex")
 let currentFolderIndex = parseInt(currentFolderIndexStr)
 console.log(typeof currentFolderIndex)
 
@@ -84,6 +118,10 @@ inputBtn.addEventListener("click", function() {
 deleteBtn.addEventListener("dblclick", function() {
     localStorage.clear()
     myLinks = []
+    localStorage.setItem("currentFolder","myLinks")
+    localStorage.setItem("myFolders", JSON.stringify(["myLinks"]))
+    localStorage.setItem("currentFolderIndex", "0" )
+    localStorage.setItem("myLinks", JSON.stringify([]) )
     render(myLinks)
 })
 
